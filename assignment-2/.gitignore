@@ -1,0 +1,2 @@
+# Ignore personal settings for vscode
+.vscode/settings.json

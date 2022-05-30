@@ -1,0 +1,100 @@
+{
+  // See https://go.microsoft.com/fwlink/?LinkId=733558
+  // for the documentation about the tasks.json format
+  "tasks": [
+    // Server tasks
+    {
+      "type": "npm",
+      "script": "start",
+      "path": "server/",
+      "problemMatcher": [],
+      "label": "Run Server",
+      "detail": "node ./bin/www"
+    },
+    {
+      "type": "npm",
+      "script": "install",
+      "path": "server/",
+      "problemMatcher": [],
+      "label": "Server Install packages",
+      "detail": "Install dependencies from package"
+    },
+    // Client tasks
+    {
+      "type": "npm",
+      "script": "start",
+      "path": "client/",
+      "problemMatcher": [],
+      "label": "Run Client",
+      "detail": "Starts up the development server for the client"
+    },
+    {
+      "type": "npm",
+      "script": "install",
+      "path": "client/",
+      "problemMatcher": [],
+      "label": "Client Install packages",
+      "detail": "Install dependencies from package"
+    },
+    {
+      "type": "npm",
+      "script": "build",
+      "path": "client/",
+      "group": "build",
+      "problemMatcher": [],
+      "label": "Build Client",
+      "detail": "react-scripts build"
+    },
+    {
+      "label": "Transfer Client Build Contents To Server",
+      "type": "shell",
+      "command": "cp -r client/build/* server/public/",
+      "detail": "Compile the react project and copy it to the static directory of the server"
+    },
+    {
+      "label": "Build and Export Client",
+      "dependsOrder": "sequence",
+      "dependsOn": ["Build Client", "Transfer Client Build Contents To Server"]
+    },
+    // Python clairty server tasks
+    {
+      "label": "Run Clarity Server",
+      "type": "shell",
+      "command": "cd clarity && poetry run sanic main.app",
+      "detail": "Run the python server (hot reload)"
+    },
+    {
+      "label": "Server Install Packages",
+      "type": "shell",
+      "command": "cd clarity && poetry install",
+      "detail": "Install/Update the packages for the python server"
+    },
+    {
+      "label": "Clarity Export Requirements",
+      "type": "shell",
+      "command": "cd clarity && poetry export -f requirements.txt --output requirements.txt",
+      "detail": "Export the requirements.txt file"
+    },
+    // Docker tasks
+    {
+      "type": "docker-build",
+      "label": "Docker Build",
+      "dockerBuild": {
+        "context": ".",
+        "dockerfile": "Dockerfile",
+        "tag": "clarity:latest"
+      }
+    },
+    // Aggregated Project Task
+    // TODO: Not working as docker tasks are not configured properly
+    {
+      "label": "Build Project",
+      "dependsOrder": "sequence",
+      "dependsOn": [
+        "Build and Export Client",
+        "Clarity Export Requirements",
+        "Docker Build"
+      ]
+    }
+  ]
+}
